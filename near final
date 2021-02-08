@@ -1,0 +1,639 @@
+//december 9th, 2020, Adrian Cisneros, This program is a game, it is a Text based game, dependent on lack of graphics, traveling throuhg rooms of a house fighting monsters, getting meds, and keys, the keys unlock more rooms, and a room that enacts the final lines of code.
+#include <iostream>
+#include<string>
+#include<algorithm>
+#include <ctime>
+using namespace std;
+void Battlesystem(int chance);
+void inventory();
+void option();
+void damage(int b);
+//The winning condition will be finding a key on the base floor, then unlocking the basement, and getting what we suspected to be the antitode to the zed virus
+//global variables: seen and used by ALL FUNCTIONS
+int armour=50;//player armour
+int ph=100;//player health
+int HI[5];//number tracker of health items
+bool doExit = false;//Alive?
+bool key=false;//both keys to complete the game
+int f;//tracks whether person has escaped or not
+int main() {
+  srand(time(NULL));
+  int chance; //number holder
+  string m; //movement (west, east, etc...)
+  //string mh[2];
+  string ch;
+  int p; //keeps track of rooms
+  int split; //splitted halway
+  int b; //number holder
+  int tracking[11]={0,0,0,0,0,0,0,0};//tracks amount of times youve been in room
+  int nh[2];
+  nh[1]=1;
+  cout << "As you step through the door to the broken down suburban house, a gust of humid dank air hits you."<<endl<<endl<< "Looking around, you see pictures and toys on the floor. 'Umbrella said the antitode would be here. This poor family, they mustve noticed when they were all together in the living room...'"<<endl;
+  p=1;//room number=bla bla bla; 
+    
+  while (ph >0 && doExit == false){//game loop
+  srand(time(NULL));
+    cout<<"You currently have "<<ph<<" health, and "<<armour<<" armour"<<endl;//tells user health
+  //room 1-------------------------------------
+      if (p==1){
+      chance=rand()%3+1;//codes for biome/monsters or health item chance
+      if(nh[1]==0){
+        chance=0;}
+      Battlesystem(chance);//loot/monster function
+      nh[1]=0;
+      if(tracking[0]>=2){
+        key=true;//this gives a key necassary to "win"
+        cout<<"You got a key!"<<endl;}
+      else{}
+      cout<<"Do you want to open your inventory?(yes please), (no)"<<endl;
+     // if(chance==1 or (chance==3 && a>=60) or (chance==4 && a<=50) || f!=1){
+       // getline(cin, mh[1]);}
+      getline(cin, ch);
+      if(ch.compare("yes please")==0 || ch.compare("yes")==0){
+        inventory();}
+      else{}
+      cout<<"You are in the living room, there is screen door to the (south), and another wooden door to the (east)"<<endl;
+      //getline(cin, mh[0]);
+      getline(cin, m);
+      if (m.compare("east")==0){
+        p=2, nh[1]=1;
+        tracking[1]=tracking[1]+1;}
+      else if (m.compare("south")==0){
+        p=4, nh[1]=1;
+        tracking[3]=tracking[3]+1;}
+      else 
+        cout<<"not avaliable"<<endl; 
+    }
+    
+  //room2----------------------------------------
+    else if (p==2){
+      if(tracking[1]==1){
+        cout<<"A waft of rotting meat and fruits hits you at once. As you struggle to stand straight, you notice the half rotted body in the corner... the father."<<endl;}
+      chance=rand()%3+1;
+      if(nh[1]==0){
+        chance=0;}
+      Battlesystem(chance);
+      nh[1]=0;
+      if(tracking[1]>=2){
+        key=true;//this gives a key necassary to "win"
+        cout<<"You got a key!"<<endl;}
+      else{}
+      cout<<"Do you want to open your inventory?(yes please), (no)"<<endl;
+      //if(chance==1 or (chance==3 && a>=60) or (chance==4 && a<=50) || f!=1){
+        //getline(cin, mh[1]);}
+      getline(cin, ch);
+      if(ch.compare("yes please")==0 || ch.compare("yes")==0){
+        inventory();}
+      else{}
+      cout<<"You are in the kitchen, there is greenhouse door to the (south), a wooden one to the (west), and a another wooden door to the (east)"<<endl;
+      getline(cin, m);
+      if(m.compare("east")==0){
+        p=3, nh[1]=1;
+        tracking[2]=tracking[2]+1;}
+      else if (m.compare("south")==0){
+        p=split, nh[1]=1;
+        tracking[9]=tracking[9]+1;}
+      else if (m.compare("west")==0){
+        p=1, nh[1]=1;
+        tracking[0]=tracking[0]+1;}
+      else 
+        cout<<"not avaliable"<<endl; 
+    }
+
+  //room 3----------------------------------------
+    else if (p==3 or p==10){
+      if(tracking[2]==1){
+        cout<<"You try to open the door but feel some resistance. As you push open the door, a loud clang sounds, there was a metal chair blocking the door, your eyes widen as you see the spilled blood, on a tiny blanket in the corner"<<endl;}
+      chance=rand()%3+1;
+      if (p==10){
+        chance=0;}
+      else{}
+      if(nh[1]==0){
+        chance=0;}
+      Battlesystem(chance);
+      nh[1]=0;
+      if(tracking[2]>=2){
+        key=true;//this gives a key necassary to "win"
+        cout<<"You got a key!"<<endl;}
+      else{}
+      cout<<"Do you want to open your inventory?(yes please), (no)"<<endl;
+      //if(chance==1 or (chance==3 && a>=60) or (chance==4 && a<=50) || f!=1){
+        //getline(cin, mh[1]);}
+      getline(cin, ch);
+      if(ch.compare("yes please")==0 || ch.compare("yes")==0){
+        inventory();}
+      else{}
+      cout<<"You are in the Bedroom, there is screen door to the (south), a wooden door to the (west), and a wooden latch in the cieling (up)"<<endl;
+      getline(cin, m);
+      if(m.compare("west")==0){
+        p=2, nh[1]=1;
+        tracking[1]=tracking[1]+1;}
+      else if (m.compare("up")==0){
+        if(key==true){
+          p=6, nh[1]=1;
+          key=false;
+          tracking[5]=tracking[5]+1;}
+        else if (key==false){
+          cout<<"There seems to be a lock on the latch"<<endl;
+          p=10, nh[1]=1;}}
+      else if (m.compare("south")==0){
+        p=5, nh[1]=1;
+        tracking[4]=tracking[4]+1;}
+      else 
+        cout<<"not avaliable"<<endl; 
+    }
+
+  //room 4--------------------------------------------
+    else if (p==4){
+      if(tracking[3]==1){
+        cout<<"At a first glance the backyard doesnt look bad, the grass is lush, and has little to no weeds, but you cant get the feeling out that something smells off, like a strange dog smell"<<endl;}
+      chance=rand()%3+1;
+      if(nh[1]==0){
+        chance=0;}
+      Battlesystem(chance);
+      nh[1]=0;
+      if(tracking[3]>=2){
+        key=true;//this gives a key necassary to "win"
+        cout<<"You got a key!"<<endl;}
+      else{}
+      cout<<"Do you want to open your inventory?(yes please), (no)"<<endl;
+      //if(chance==1 or (chance==3 && a>=60) or (chance==4 && a<=50) || f!=1){
+        //getline(cin, mh[1]);}
+      getline(cin, ch);
+      if(ch.compare("yes please")==0 || ch.compare("yes")==0){
+        inventory();}
+      else{}
+      cout<<"You are in the backyard, there is a screen door to the (north), and greenhouse door to the (east)"<<endl;
+      getline(cin, m);
+      if(m.compare("east")==0){
+        p=split, nh[1]=1;
+        tracking[9]=tracking[9]+1;}
+      else if(m.compare("north")==0){
+        p=1, nh[1]=1;
+        tracking[0]=tracking[0]+1;}
+      else 
+        cout<<"not avaliable"<<endl; 
+    }
+  //room 5---------------------------------------
+    else if (p==5){
+      if(tracking[4]==1){
+        cout<<"When stepping through you notice the floor is very weathered, however you wonder what the whether is like because it looks more defined weathering"<<endl;}
+      chance=4;
+      if(nh[1]==0){
+        chance=0;}
+      Battlesystem(chance);
+      nh[1]=0;
+      if(tracking[4]>=2){
+        key=true;//this gives a key necassary to "win"
+        cout<<"You got a key!"<<endl;}
+      else{}
+      cout<<"Do you want to open your inventory?(yes please), (no)"<<endl;
+     // if(chance==1 or (chance==3 && a>=60) or (chance==4 && a<=50) || f!=1){
+       // getline(cin, mh[1]);}
+      getline(cin, ch);
+      if(ch.compare("yes please")==0 || ch.compare("yes")==0){
+        inventory();}
+      else{}
+      cout<<"You are on the patio, there is a screen door to the (north), and a greenhouse door to the (west)"<<endl;
+      getline(cin, m);
+      if (m.compare("west")==0){
+        p=split, nh[1]=1;
+        tracking[9]=tracking[9]+1;}
+      else if(m.compare("north")==0){
+        p=3, nh[1]=1;
+        tracking[2]=tracking[2]+1;}
+      else 
+        cout<<"not avaliable"<<endl;}
+  //split halway-------------------------------(room 9)
+    else if (p==split){
+      if(tracking[9]==1){
+        cout<<"As soon as you step through the glass door, you immidiatly feel more on edge, everything is gray and dimmly lit, a set of bones sits in the tri-way of the halway, it dosnt look human"<<endl;}
+      chance=3;
+      if(nh[1]==0){
+        chance=0;}
+      Battlesystem(chance);
+      nh[1]=0;
+      if(tracking[9]>=2){
+        key=true;//this gives a key necassary to "win"
+        cout<<"You got a key!"<<endl;}
+      else{}
+      cout<<"Do you want to open your inventory?(yes please), (no)"<<endl;
+      //if(chance==1 or (chance==3 && a>=60) or (chance==4 && a<=50) || f!=1){
+        //getline(cin, mh[1]);}
+      getline(cin, ch);
+      if(ch.compare("yes please")==0 || ch.compare("yes")==0){
+        inventory();}
+      else{}
+      cout<<"You are in a three way split, the hallway continues (north), (west), and (east)"<<endl;
+      getline(cin, m);
+      if(m.compare("east")==0){
+        p=5, nh[1]=1;
+        tracking[4]=tracking[4]+1;}
+      else if(m.compare("north")==0){
+        p=2, nh[1]=1;
+        tracking[1]=tracking[1]+1;}
+      else if(m.compare("west")==0){
+        p=4, nh[1]=1;
+        tracking[3]=tracking[3]+1;}
+      else 
+        cout<<"not avaliable"<<endl;}
+  //upstairs--------------------------------room(6)
+    else if (p==6){
+      cout<<"When you walk upstairs you feel something in your pocket squirm, a rat! it runs away with something glinting and long, maybe a key..."<<endl;
+      if(tracking[5]==1){
+        cout<<"As you walk up the stairs it looks fresher than the rest of the house, maybe it was a less used space"<<endl;}
+      chance=4;
+      if(nh[1]==0){
+        chance=0;}
+      Battlesystem(chance);
+      nh[1]=0;
+      if(tracking[5]>=2){
+        key=true;//this gives a key necassary to "win"
+        cout<<"You got a key!"<<endl;}
+      else{}
+      cout<<"Do you want to open your inventory?(yes please), (no)"<<endl;
+      //if(chance==1 or (chance==3 && a>=60) or (chance==4 && a<=50) || f!=1){
+        //getline(cin, mh[1]);}
+      getline(cin, ch);
+      if(ch.compare("yes please")==0 || ch.compare("yes")==0){
+        inventory();}
+      else{}
+      cout<<"You are in the study, there is a wood door to the (west), and stiarcase going (down)."<<endl;
+      getline(cin, m);
+      if(m.compare("down")==0){
+        p=3, nh[1]=1;
+        tracking[2]=tracking[2]+1;}
+      else if(m.compare("west")==0){
+        p=7, nh[1]=1;
+        tracking[6]=tracking[6]+1;}
+      else 
+        cout<<"not avaliable"<<endl; 
+    }
+  //upstairs triway--------------------------------room(7)
+    else if (p==7){
+      if(tracking[6]==1){
+        cout<<"Going through the door this room looks almost new with little to nothing in it"<<endl;}
+      chance=rand()%2+3;
+      cout<<"Do you want to open your inventory?(yes please), (no)"<<endl;
+      //if(chance==1 or (chance==3 && a>=60) or (chance==4 && a<=50) || f!=1){
+        //getline(cin, mh[1]);}
+      getline(cin, ch);
+      if(ch.compare("yes please")==0 || ch.compare("yes")==0){
+        inventory();}
+      else{}
+      cout<<"You are in a three door way room, there is a metal door to the (west), a wood door to the (south), and another wood door to the (east)"<<endl;
+      getline(cin, m);
+      if(m.compare("east")==0){
+        p=6, nh[1]=1;
+        tracking[5]=tracking[5]+1;}
+      else if(m.compare("south")==0){
+        p=8, nh[1]=1;
+        tracking[7]=tracking[7]+1;}
+      else if(m.compare("west")==0){
+        if(key==true){
+          p=9;}
+        else if (key==false)
+          cout<<"It seems to be bolted with a lock"<<endl;}
+      else 
+        cout<<"not avaliable"<<endl; 
+    }
+  //upstairs game room--------------------------------room(8)
+    else if (p==8){
+      if(tracking[7]==1){
+        cout<<"The floor looks unsteady, you attempt to avoid the middle"<<endl;}
+      if(nh[1]==0){
+        chance=0;}
+      Battlesystem(chance);
+      nh[1]=0;
+      if(tracking[7]>=2){
+        key=true;//this gives a key necassary to "win"
+        cout<<"You got a key!"<<endl;}
+      else{}
+      cout<<"Do you want to open your inventory?(yes please), (no)"<<endl;
+      //if(chance==1 or (chance==3 && a>=60) or (chance==4 && a<=50) || f!=1){
+        //getline(cin, mh[1]);}
+      getline(cin, ch);
+      if(ch.compare("yes please")==0 || ch.compare("yes")==0){
+        inventory();}
+      else{}
+      cout<<"You are in the game room, there is a wood door to the (north)"<<endl;
+      getline(cin, m);
+      if(m.compare("north")==0){
+        p=7, nh[1]=1;
+        tracking[6]=tracking[6]+1;}
+      else 
+        cout<<"not avaliable"<<endl; 
+    }
+  //upstairs weapons room--------------------------------room(9)
+    else if (p==9){
+      cout<<"Do you want to open your inventory?(yes please), (no)"<<endl;
+      //if(chance==1 or (chance==3 && a>=60) or (chance==4 && a<=50) || f!=1){
+        //getline(cin, mh[1]);}
+      getline(cin, ch);
+      if(ch.compare("yes please")==0 || ch.compare("yes")==0){
+        inventory();}
+      else{}
+      cout<<"You are in the weapns room, as you step in you know something is wrong,... the air around you is frigid yet humid, as you look forward you see a small safe, and as you check your key, you see its also a perfect match, 'finally' you think to yourself, 'this will all be over soon, but i just dont know why the antitode would be here, but even so this house is weird, its like one big puzz,...les.', inside the safe, there is a timer, it seemes there was a string connected to the safe door to trigger its timer, 5, 4, 3, 2, 1. Loud rings burst, for a second you are dumb founded, then it clicks, this isnt a mission this is a 'test', a loud boom bursts from the wall as a massive entity looms, a tall figure in a trench like coat. You think one thing, 'run'."<<endl<<"type east."<<endl;
+      getline(cin, m);
+      if(m.compare("east")==0){
+        p=7;
+        cout<<"You look behind you, expecting to see a bouldering huminoid rushing behind you but it is standing still, you think to your self, it looks like it could run two rooms by the time i run one, in an instant it bursts into sprint, your fears are correct."<<endl<<"type north."<<endl;
+        getline(cin, m);
+        if(m.compare("north")==0){
+          cout<<"He is practically right behind you, almost feeling his robotic paced breath, as soon as you step into the room, the ground shakes, and the floor infront of you crumbles"<<endl<<"type down.";
+          getline(cin, m);
+          if(m.compare("down")==0){
+            armour=0;
+            ph=1;
+            cout<<"Your health is now "<<ph<<endl<<" You fall immiedieatly into the split halway, you lost your backpack in the fall, 'I have to get out of this house'(north), (west), (east)"<<endl;
+            getline(cin, m);
+            if(m.compare("east")==0){
+              cout<<"After heading east you remember that the front door is too the north west, you are on the patio, (west), (north)";
+              getline(cin, m);
+              if(m.compare("west")==0){
+              cout<<"As you turn around and step forward you are standing face to face with the thing,...*crack*";
+              doExit=true;}//lose
+              else if (m.compare("north")==0){
+                cout<<"You hear footsteps from the south, (west) (south)";
+                getline(cin, m);
+                if(m.compare("south")==0){
+                  cout<<"As you turn around and step forward you are standing face to face with the thing,...*crack*";
+                  doExit=true;}//lose
+                else if (m.compare("west")==0){
+                  cout<<"You see the thing burst through the door behind you."<<endl<<"As you run toward the front door and step out you see a lady standing in front of you 'You were so close!'*Bang*";
+                  doExit=true;}}}//win/best outcome
+            else if (m.compare("west")==0){
+              cout<<"You hear heavy footsteps from the split, (north), (east)";
+              getline(cin, m);
+              if(m.compare("east")==0){
+                cout<<"As you turn around and step forward you are standing face to face with the thing,...*crack*";
+                doExit=true;}//lose
+              else if (m.compare("north")==0){
+                cout<<"You see the thing burst through the door behind you."<<endl<<"As you run toward the front door and step out you see a lady standing in front of you 'You were so close!'*Bang*";
+                doExit=true;}}//win/best outcome
+            else if (m.compare("north")==0){
+              cout<<"You hear heavy footsteps from the split, (west), (south) (east)";
+              getline(cin, m);
+              if(m.compare("south")==0){
+                cout<<"As you turn around and step forward you are standing face to face with the thing,...*crack*";
+                doExit=true;}//lose shamefully
+              else if (m.compare("east")==0){
+                cout<<"You see the thing burst through the door behind you."<<endl<<"As you try to run you feel a strong grip on your waist, *crack*";
+                doExit=true;}//lose however its less shameful this way
+              else if (m.compare("west")==0){
+                cout<<"You see the thing burst through the door behind you."<<endl<<"As you run toward the front door and step out you see a lady standing in front of you 'You were so close!'*Bang*";
+                doExit=true;}}}}//win/best outcome
+      else 
+        cout<<"not avaliable"<<endl;}
+    }
+  }
+  if(doExit==true){//check whether you are dead and days so then quits game
+    cout<<"game over, see you next time"<<endl;}}//end switch//end game loop
+//stuff here will only show up at game over (win or lose)//end main
+
+
+//function definitions
+//inventory function, this function when called displays a menu of your items, where you can chose, and use, and repeat, or quit to continue the game
+void inventory(){
+  int input;
+  string HIdescription[4]={"bandages", "med kit", "foofdootballkit", "keplat kit"};
+  do{
+  for(int i=0;i<4;i++)
+    cout<<i+1<<". "<<HIdescription[i]<<": "<< HI[i]<<endl;
+  if(key==true){
+    cout<<"5. key: 1"<<endl;}
+  cout<<"0, to quit:"<<endl;
+  cin>> input;
+  switch(input){
+    case 1:
+      if(HI[0]<=0){
+        cout<<"You do not have any bandages"<<endl;}
+      else{
+        if (ph==100){
+          cout<<"Your health is already at 100"<<endl;}
+        else if(ph+25>91){
+          cout<<"your health is now 91(max with bandages);"<<endl;
+          ph=91;
+          HI[0]=HI[0]-1;}
+        else if(ph+25<=91){
+          ph=ph+25;
+          HI[0]=HI[0]-1;
+          cout<<"Your health is now "<<ph<<" (91 is the max with bandages)"<<endl;}}
+    break;
+    case 2:
+      if(HI[1]<=0){
+        cout<<"You do not have any med kits"<<endl;}
+      else{
+        if (ph==100){
+          cout<<"Your health is already at 100"<<endl;}
+        else if(ph+50>100){
+          cout<<"your health is now 100(max);"<<endl;
+          ph=100;
+          HI[1]=HI[1]-1;}
+        else if(ph+25<=100){
+          ph=ph+50;
+          HI[1]=HI[1]-1;
+          cout<<"Your helath is now "<<ph<<" (100 is the max)"<<endl;}}
+    break;
+    case 3:
+      if(HI[2]<=0){
+        cout<<"You do not have any footbal kits"<<endl;}
+      else{
+        if (armour==50){
+          cout<<"Your armour is already at 50 (max)"<<endl;}
+        else if(armour+25>50){
+          cout<<"your armour is now 50(max);"<<endl;
+          armour=50;
+          HI[2]=HI[2]-1;}
+        else if(armour+25<=50){
+          armour=armour+25;
+          HI[2]=HI[2]-1;
+          cout<<"Your armour is now "<<armour<<" (50 is the max)"<<endl;}}
+    break;
+    case 4:
+      if(HI[3]<=0){
+        cout<<"You do not have any keplar kits"<<endl;}
+      else{
+        if (armour==50){
+          cout<<"Your armour is already at 50 (max)"<<endl;}
+        else if(armour+50>=50){
+          cout<<"your armour is now 50(max);"<<endl;
+          armour=50;
+          HI[3]=HI[3]-1;}}
+    break;
+    if(key==true){
+      case 5:
+        cout<<"This proabably unlocks a lock."<<endl;
+      break;}
+    case 0:
+    break;}
+}while (input!=0);
+//return 0;//you should never get here
+}
+
+//Battle system determines first the "biome" then a randomn number generator out of 100 determines what specific monster or med you get and if its a monster it calls a secondary funciton that runs the damage and fighting of said monster
+void Battlesystem(int chance){
+  srand(time(NULL));
+  int a=rand()%100+1;
+  int b;
+  int nh[3];//number holder
+  nh[1]=1;
+  nh[2]=0;
+  char ch;//char holder
+  string mon[4]={"radioactive rat","rabid dog","radioactive spider","Zed"};
+  int dam[4]={15,20,25,40};
+  //cout<<a<<endl;
+  //cout<<chance<<endl;
+  if (chance==1){
+    if (a<=15){
+      b=3;
+      damage(b);}
+    else if (a<=45){
+      b=1;
+      damage(b);}
+    else if  (a<=75){
+      b=2;
+      damage(b);}
+    else if (a<=100){
+      b=0;
+      damage(b);}
+          
+  //second 'biome'
+  }
+  if (chance==2){
+    if (a<=35){
+      cout<<"As you look around you see a bandage kit"<<endl;
+      HI[0]=HI[0]+1;}
+    else if (a<=70){
+      cout<<"As you look around you see a first aid kit"<<endl;
+      HI[1]=HI[1]+1;;}
+    else if  (a<=90){
+      cout<<"As you look around you see a playground football kit"<<endl;
+      HI[2]=HI[2]+1;}
+    else if (a<=100){
+      cout<<"As you look around you see a keplar kit"<<endl;
+      HI[3]=HI[3]+1;}
+  }
+  //special biome
+  if (chance==4){
+    if(a==20){
+      b=3;
+      damage(b);}
+    else if (a<=50){
+      b=2;
+      damage(b);}
+    else if  (a<=80){
+      cout<<"As you look around you see a playground football kit"<<endl;
+      HI[2]=HI[2]+1;}
+    else if (a<=100){
+      cout<<"As you look around you see a keplar kit"<<endl;
+      HI[3]=HI[3]+1;}
+  }
+  if (chance==3){
+    if (a<=40){
+      cout<<"As you look around you see a bandage kit"<<endl;
+      HI[0]=HI[0]+1;}
+    else if (a<=60){
+      cout<<"As you look around you see a first aid kit"<<endl;
+      HI[1]=HI[1]+1;}
+    else if (a<=80){
+      b=1;
+      damage(b);}
+    else if  (a<=100){
+      b=2;
+      damage(b);}
+  }
+}
+//Damage takes in the info from battle system, and plugs in the appropiate damage, and health for the monster and enacts code which will get a random number from 1-4 and if you guess it its an instant kill, however if not just regular damage, but before that it calls another function that gives you options
+void damage(int b){
+  srand(time(NULL));
+  int nh[4];
+  nh[2]=1;
+  string mon[4]={"radioactive rat","rabid dog","radioactive spider","Zed"};
+  int dam[4]={15,17,20,40};
+  int H[4]={15,20,20,20};
+  cout<<"A "<<mon[b]<<" has appeared!"<<endl;
+  do{
+    option();
+    if(f!=1){
+    if(ph+armour<dam[b]){
+      cout<<"Game over"<<endl;
+      doExit=true;//dead
+      break;}
+    else{
+      if (armour<=dam[b]){
+        nh[0]=armour-dam[b];
+        ph=ph+nh[0];
+        armour=0;
+        cout<<"Your armour is now "<<armour<<" health"<<ph<<" health"<<endl;}
+      else if(armour>dam[b]){
+        armour=armour-dam[0+b];
+        cout<<"Your armour is now at "<<armour<<" your health is currently "<<ph<<endl;}}
+    cout<<"Guess the number between 1 and 4 to determine your damage"<<endl;
+    nh[1]=rand()%4+1;
+    cin>> nh[3];
+    if (nh[3]==nh[1]){
+      if(H[b]-20>0){
+        H[b]=H[b]-20;
+        cout<<"The monsters health is now, "<<H[b]<<endl;}
+      else if(H[b]-20<=0){
+        H[b]=dam[b];
+        cout<<"The "<<mon[b]<<" is dead"<<endl;
+        f=1;}}
+    else if (nh[3]!=nh[1]){
+      if(H[b]-10>0){
+        H[b]=H[b]-10;
+        cout<<"The monsters health is now, "<<H[b]<<endl;}
+      else if(H[b]-10<=0){
+        H[b]=dam[b];
+        cout<<"The "<<mon[b]<<" is dead"<<endl;
+        f=1;}}
+  }}while(doExit==true or f!=1);//tracks whether you are dead or have escpaed
+}
+//Option, gives you an option between attempting to run away, calling the inventory function, and continuing the function of "Damage" the running is determined by a number between 1-4 if you guess it you escape if you dont, you get 5 damage and cant try again
+  void option(){
+    
+    cout<<"beginning option function"<<endl;
+    int nh[3]={0,2,0};//number holder
+    string ch;//string holder
+    //string mh[1];
+    do{
+      cout<<"*Do you want to (run), use an (item), or (fight)"<<endl;
+     // getline(cin, mh[0]);
+      getline(cin, ch);
+      cout<<ch<<endl;
+        if(ch.compare("run")==0){
+          if (nh[2]>=1){
+            cout<<"you have already tried to run,... you'll float too"<<endl;}
+          else if(nh[2]<=0){
+            int a=rand()%4+1;
+            if(a==1){
+              cout<<"you were able to escape"<<endl;
+              f=1;
+              break;}
+            else if(a>=2){
+              cout<<"You were not able to escape, you've taken 5 damage"<<endl;
+              nh[2]=2;
+              if (armour>=5){
+                armour=armour-5;
+                cout<<"Your amour is currently at, "<<armour<<" and your health is at "<<ph<<endl;
+                nh[2]=2;}
+              else if (armour+ph<=5){
+                cout<<"Game Over"<<endl;
+                doExit=true;//dead
+                f=1;
+                break;}
+              else if (armour<5){
+                ph=ph+armour-5;
+                armour=0;
+                cout<<"Your health is currently at "<<ph<<" and "<<armour<<"armour"<<endl;
+                nh[2]=2;}}}}//end running
+        else if(ch.compare("item")==0){
+          inventory();
+          f=0;}
+        else if(ch.compare("fight")==0){
+          f=0;
+          cout<<"in fight if statement"<<endl;
+          break;}
+        //cout<<nh[1]<<" "<<f<<endl;
+    }while( doExit==false && f!=1);}//tracks whether you are dead, or have escpaed 
